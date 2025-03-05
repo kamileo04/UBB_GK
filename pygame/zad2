@@ -1,0 +1,29 @@
+import pygame
+
+pygame.init()
+win = pygame.display.set_mode((600, 600))
+pygame.display.set_caption("First Game")
+
+# deklarowanie koloru
+CZERWONY = (255, 0, 0)
+BIALY= (255, 255, 255)
+run = True
+while run:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+
+    win.fill(BIALY)
+    
+    # rysowanie trójkątów
+    pygame.draw.polygon(win, CZERWONY, [(50, 50), (50, 70), (550, 70)])
+    pygame.draw.polygon(win, CZERWONY, [(50, 50), (550, 50), (550, 70)])
+    pygame.draw.polygon(win, CZERWONY, [(55, 570), (545, 50), (560, 65)])
+    pygame.draw.polygon(win, CZERWONY, [(55, 570),  (545,50),(40, 555)])
+    #pygame.draw.polygon(win, CZERWONY, [ (40, 555), (55, 570), (560, 65), (545, 50) ])
+    pygame.draw.polygon(win, CZERWONY, [(50, 550), (50, 570), (550, 570)])
+    pygame.draw.polygon(win, CZERWONY, [(50, 550), (550, 550), (550, 570)])
+    
+    pygame.display.update()
+
+pygame.quit()
