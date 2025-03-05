@@ -1,0 +1,66 @@
+import pygame
+import math
+
+def transform_points(points, matrix, center, translation=(0, 0)):
+    transformed = []
+    for x, y in points:
+        x -= center[0]
+        y -= center[1]
+        new_x = matrix[0][0] * x + matrix[0][1] * y
+        new_y = matrix[1][0] * x + matrix[1][1] * y
+        transformed.append((new_x + center[0] + translation[0], new_y + center[1] + translation[1]))
+    return transformed
+
+def draw_dodecagon(surface, center, radius, color, transform_matrix=None, translation=(0, 0)):
+    points = []
+    for i in range(12):
+        angle = math.radians(i * 30)
+        x = center[0] + radius * math.cos(angle)
+        y = center[1] + radius * math.sin(angle)
+        points.append((x, y))
+    
+    if transform_matrix:
+        points = transform_points(points, transform_matrix, center, translation)
+    
+    pygame.draw.polygon(surface, color, points)
+
+def main():
+    pygame.init()
+    WIDTH, HEIGHT = 600, 600
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Dwunastokąt - Transformacje")
+    
+    center = (WIDTH//2, HEIGHT//2)
+    start_radius = 150
+    default_radius = 100
+
+    transformations = {
+        pygame.K_0: (None, (0, 0), start_radius),  # Dodana opcja startowa z dwunastokątem o promieniu 150
+        pygame.K_1: (None, (0, 0), default_radius),  # Normalny kształt
+        pygame.K_2: ([[math.sqrt(2), -math.sqrt(2)], [math.sqrt(2), math.sqrt(2)]], (0, 0), default_radius),
+        pygame.K_3: ([[1, 0], [0, -2]], (0, 0), default_radius),
+        pygame.K_4: ([[2, 1], [0, 2]], (0, 0), default_radius),
+        pygame.K_5: ([[2, 0], [0, 1]], (0, -200), default_radius),
+        pygame.K_6: ([[0, -2], [-2, 1]], (0, 0), default_radius),
+        pygame.K_7: ([[-1, 0], [0, -2]], (0, 0), default_radius),
+        pygame.K_8: ([[1.4142135623730951, -0.7071067811865475], [0.7071067811865475, 0.7071067811865475]], (-100,150), default_radius),  # pierwiastki z 2
+        pygame.K_9: ([[-2, 0], [-1, -2]], (100, 0), default_radius)
+    }
+    
+    current_transform = (None, (0, 0), start_radius) #początkowy promień
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN and event.key in transformations:
+                current_transform = transformations[event.key]
+        
+        screen.fill((255, 255, 0))  # Żółte tło
+        draw_dodecagon(screen, center, current_transform[2], (0, 0, 255), current_transform[0], current_transform[1])
+        pygame.display.flip()
+    
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
